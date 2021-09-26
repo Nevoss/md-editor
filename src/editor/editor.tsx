@@ -2,11 +2,11 @@ import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import useHistory from './use-history';
 import useSelection from './use-selection';
-import {
-    EditorKeyboardEvent,
-    EditorSelectionRange,
-    EditorValue,
-} from './types';
+import { EditorSelectionRange, EditorValue } from './types';
+import { KeyboardAction } from './keyboard-action';
+import bold from './tools/bold';
+import { HistoryPushOptions } from './use-history/types';
+import { isSelectionIsActive } from './utils';
 
 interface OnChangeFunction {
     (value: string): void;
@@ -17,6 +17,12 @@ interface EditorProps {
     onChange: OnChangeFunction;
 }
 
+const adjustSelectionHistoryActions = [
+    'undo',
+    'redo',
+    'push-and-adjust-selection',
+];
+
 const Editor: FC<EditorProps> = ({ value, onChange }) => {
     const history = useHistory();
     const { ref, updateSelection } = useSelection();
@@ -24,26 +30,28 @@ const Editor: FC<EditorProps> = ({ value, onChange }) => {
     const [lastSelection, setLastSelection] =
         useState<EditorSelectionRange | null>(null);
 
-    const keyboardActions = [
-        {
-            shouldApply: (e: EditorKeyboardEvent) =>
-                e.ctrlKey && !e.shiftKey && e.code === 'KeyZ',
-            apply: history.undo,
-        },
-        {
-            shouldApply: (e: EditorKeyboardEvent) =>
-                e.ctrlKey && e.shiftKey && e.code === 'KeyZ',
-            apply: history.redo,
-        },
+    const keyboardActions: KeyboardAction[] = [
+        KeyboardAction.create({
+            apply: async () => history.undo(),
+            pattern: { ctrlKey: true, code: 'KeyZ' },
+        }),
+        KeyboardAction.create({
+            apply: async () => history.redo(),
+            pattern: { ctrlKey: true, shiftKey: true, code: 'KeyZ' },
+        }),
+        KeyboardAction.create({
+            apply: async (value) => bold(value),
+            pattern: { ctrlKey: true, code: 'KeyB' },
+        }),
     ];
 
     const pushToHistory = useCallback(
-        (values: EditorValue[], LastItemSelection?: EditorSelectionRange) =>
-            history.push(values, LastItemSelection),
+        (values: EditorValue[], options: HistoryPushOptions = {}) =>
+            history.push(values, options),
         [history.push]
     );
 
-    const pushToHistoryDebounced = useDebouncedCallback(pushToHistory, 700);
+    const pushToHistoryDebounced = useDebouncedCallback(pushToHistory, 600);
 
     useEffect(() => {
         const { current, lastAction } = history.state;
@@ -53,7 +61,7 @@ const Editor: FC<EditorProps> = ({ value, onChange }) => {
         setLocalValue(value);
         onChange(value);
 
-        if (['undo', 'redo'].includes(lastAction) && active) {
+        if (adjustSelectionHistoryActions.includes(lastAction) && active) {
             updateSelection({
                 start: active.selection.start,
                 end: active.selection.end,
@@ -84,8 +92,8 @@ const Editor: FC<EditorProps> = ({ value, onChange }) => {
                         },
                     };
 
-                    if (lastSelection.start !== lastSelection.end) {
-                        pushToHistory([editorValue], lastSelection);
+                    if (isSelectionIsActive(lastSelection)) {
+                        pushToHistory([editorValue], { lastSelection });
 
                         return;
                     }
@@ -101,7 +109,7 @@ const Editor: FC<EditorProps> = ({ value, onChange }) => {
                         end: target.selectionEnd,
                     });
                 }}
-                onKeyDown={(e) => {
+                onKeyDown={async (e) => {
                     const action = keyboardActions.find((action) =>
                         action.shouldApply(e)
                     );
@@ -110,10 +118,26 @@ const Editor: FC<EditorProps> = ({ value, onChange }) => {
                         return;
                     }
 
+                    pushToHistoryDebounced.flush();
                     e.preventDefault();
                     e.stopPropagation();
 
-                    action.apply();
+                    // @ts-ignore
+                    const target: HTMLTextAreaElement = e.target;
+
+                    const newValue = await action.apply({
+                        value: target.value,
+                        selection: lastSelection,
+                    });
+
+                    if (!newValue) {
+                        return;
+                    }
+
+                    pushToHistory([newValue], {
+                        lastSelection,
+                        adjustSelection: true,
+                    });
                 }}
                 autoFocus
             />

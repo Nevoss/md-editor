@@ -2,6 +2,7 @@ import { Dispatch, useCallback, useReducer } from 'react';
 import { EditorValue, EditorSelectionRange } from '../types';
 import {
     History,
+    HistoryPushOptions,
     HistoryPushReducerActionPayload,
     HistoryReducerAction,
     HistoryReducerActions,
@@ -33,7 +34,9 @@ const actions: HistoryReducerActions = {
         return {
             current: [...payload.values, ...current],
             temp: [],
-            lastAction: 'push',
+            lastAction: payload.adjustSelection
+                ? 'push-and-adjust-selection'
+                : 'push',
         };
     },
     undo: (prev: History) => {
@@ -84,8 +87,17 @@ export default function useHistory() {
         );
 
     const push = useCallback(
-        (values: EditorValue[], lastSelection?: EditorSelectionRange) =>
-            dispatch({ type: 'push', payload: { values, lastSelection } }),
+        (
+            values: EditorValue[],
+            {
+                lastSelection = null,
+                adjustSelection = false,
+            }: HistoryPushOptions
+        ) =>
+            dispatch({
+                type: 'push',
+                payload: { values, lastSelection, adjustSelection },
+            }),
         [dispatch]
     );
 
