@@ -1,8 +1,12 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useDebouncedCallback } from 'use-debounce';
 import useHistory from './use-history';
 import useSelection from './use-selection';
-import { SelectionRange } from './types';
+import {
+    EditorKeyboardEvent,
+    EditorSelectionRange,
+    EditorValue,
+} from './types';
 
 interface OnChangeFunction {
     (value: string): void;
@@ -16,25 +20,30 @@ interface EditorProps {
 const Editor: FC<EditorProps> = ({ value, onChange }) => {
     const history = useHistory();
     const { ref, updateSelection } = useSelection();
-    const [lastSelection, setLastSelection] = useState<SelectionRange | null>(
-        null
-    );
     const [localValue, setLocalValue] = useState(value || '');
+    const [lastSelection, setLastSelection] =
+        useState<EditorSelectionRange | null>(null);
 
-    const pushToHistoryDebounced = useDebouncedCallback(
-        (
-            { value, selectionStart, selectionEnd }: HTMLTextAreaElement,
-            currentLastSelection?: SelectionRange
-        ) =>
-            history.push(
-                {
-                    value,
-                    selection: { start: selectionStart, end: selectionEnd },
-                },
-                currentLastSelection
-            ),
-        700
+    const keyboardActions = [
+        {
+            shouldApply: (e: EditorKeyboardEvent) =>
+                e.ctrlKey && !e.shiftKey && e.code === 'KeyZ',
+            apply: history.undo,
+        },
+        {
+            shouldApply: (e: EditorKeyboardEvent) =>
+                e.ctrlKey && e.shiftKey && e.code === 'KeyZ',
+            apply: history.redo,
+        },
+    ];
+
+    const pushToHistory = useCallback(
+        (values: EditorValue[], LastItemSelection?: EditorSelectionRange) =>
+            history.push(values, LastItemSelection),
+        [history.push]
     );
+
+    const pushToHistoryDebounced = useDebouncedCallback(pushToHistory, 700);
 
     useEffect(() => {
         const { current, lastAction } = history.state;
@@ -54,23 +63,34 @@ const Editor: FC<EditorProps> = ({ value, onChange }) => {
 
     return (
         <div className="h-full flex flex-col">
-            <div>
-                <button onClick={() => history.undo()}> Undo </button>
-                <button onClick={() => history.redo()}> Redo </button>
-            </div>
+            {/*<div>*/}
+            {/*    <button onClick={() => history.undo()}> Undo </button>*/}
+            {/*    <button onClick={() => history.redo()}> Redo </button>*/}
+            {/*</div>*/}
             <textarea
                 ref={(el) => (ref.current = el)}
                 name="editor"
                 id="editor"
                 value={localValue}
+                className="w-full border-0 resize-none h-full focus:outline-none p-6 flex-1"
                 onChange={({ target }) => {
                     setLocalValue(target.value);
-                    pushToHistoryDebounced(
-                        target,
-                        lastSelection.start !== lastSelection.end
-                            ? lastSelection
-                            : null
-                    );
+
+                    const editorValue: EditorValue = {
+                        value: target.value,
+                        selection: {
+                            start: target.selectionStart,
+                            end: target.selectionEnd,
+                        },
+                    };
+
+                    if (lastSelection.start !== lastSelection.end) {
+                        pushToHistory([editorValue], lastSelection);
+
+                        return;
+                    }
+
+                    pushToHistoryDebounced([editorValue]);
                 }}
                 onSelect={(e) => {
                     // @ts-ignore
@@ -81,7 +101,21 @@ const Editor: FC<EditorProps> = ({ value, onChange }) => {
                         end: target.selectionEnd,
                     });
                 }}
-                className="w-full border-0 resize-none h-full focus:outline-none p-6 flex-1"
+                onKeyDown={(e) => {
+                    const action = keyboardActions.find((action) =>
+                        action.shouldApply(e)
+                    );
+
+                    if (!action) {
+                        return;
+                    }
+
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    action.apply();
+                }}
+                autoFocus
             />
         </div>
     );

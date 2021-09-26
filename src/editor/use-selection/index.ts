@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { SelectionRange } from '../types';
+import { EditorSelectionRange } from '../types';
 
 interface HTMLElementWithSelection extends HTMLElement {
     setSelectionRange: (start: number, end: number) => void;
@@ -7,7 +7,9 @@ interface HTMLElementWithSelection extends HTMLElement {
 
 export default function useSelection() {
     const ref = useRef<HTMLElementWithSelection>();
-    const [selection, updateSelection] = useState<SelectionRange | null>(null);
+    const [selection, updateSelection] = useState<EditorSelectionRange | null>(
+        null
+    );
 
     useEffect(() => {
         if (!selection || !ref.current) {

@@ -1,4 +1,4 @@
-import { EditorValue } from '../types';
+import { EditorSelectionRange, EditorValue } from '../types';
 
 export interface History {
     current: EditorValue[];
@@ -10,7 +10,12 @@ export interface HistoryReducerActions {
     [key: string]: (prev: History, payload: HistoryReducerAction) => History;
 }
 
-export interface HistoryReducerAction {
+export interface HistoryPushReducerActionPayload {
+    values: EditorValue[];
+    lastSelection?: EditorSelectionRange;
+}
+
+export interface HistoryReducerAction<T = any> {
     type: string;
-    payload?: any;
+    payload?: T;
 }

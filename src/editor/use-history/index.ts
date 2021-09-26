@@ -1,26 +1,41 @@
 import { Dispatch, useCallback, useReducer } from 'react';
-import { EditorValue, SelectionRange } from '../types';
-import { History, HistoryReducerAction, HistoryReducerActions } from './types';
+import { EditorValue, EditorSelectionRange } from '../types';
+import {
+    History,
+    HistoryPushReducerActionPayload,
+    HistoryReducerAction,
+    HistoryReducerActions,
+} from './types';
 
 const isFirstItem = (val: EditorValue, index: number) => index === 0;
 const isNotFirstItem = (val: EditorValue, index: number) =>
     !isFirstItem(val, index);
 
 const actions: HistoryReducerActions = {
-    push: (prev: History, { payload }: HistoryReducerAction): History => ({
-        current: [
-            payload.value,
-            ...prev.current.map((val, index) => {
-                if (isFirstItem(val, index) && payload.lastSelection) {
+    push: (
+        prev: History,
+        { payload }: HistoryReducerAction<HistoryPushReducerActionPayload>
+    ): History => {
+        let current = [...prev.current];
+
+        // Can update the last item selection if there is a range of selection before creating
+        // the new item
+        if (payload.lastSelection) {
+            current = current.map((val, index) => {
+                if (isFirstItem(val, index)) {
                     val.selection = payload.lastSelection;
                 }
 
                 return val;
-            }),
-        ],
-        temp: [],
-        lastAction: 'push',
-    }),
+            });
+        }
+
+        return {
+            current: [...payload.values, ...current],
+            temp: [],
+            lastAction: 'push',
+        };
+    },
     undo: (prev: History) => {
         const lastValue = prev.current.find(isFirstItem);
 
@@ -69,8 +84,8 @@ export default function useHistory() {
         );
 
     const push = useCallback(
-        (value: EditorValue, lastSelection?: SelectionRange) =>
-            dispatch({ type: 'push', payload: { value, lastSelection } }),
+        (values: EditorValue[], lastSelection?: EditorSelectionRange) =>
+            dispatch({ type: 'push', payload: { values, lastSelection } }),
         [dispatch]
     );
 
