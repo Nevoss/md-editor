@@ -135,7 +135,9 @@ const Editor: FC<EditorProps> = ({ value, onChange }) => {
                     }
 
                     pushToHistory([newValue], {
-                        lastSelection,
+                        lastSelection: isSelectionIsActive(lastSelection)
+                            ? lastSelection
+                            : null,
                         adjustSelection: true,
                     });
                 }}
