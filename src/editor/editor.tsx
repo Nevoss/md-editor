@@ -1,12 +1,10 @@
-import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
-import { useDebouncedCallback } from 'use-debounce';
-import useHistory from './use-history';
+import React, { FC, useEffect, useRef, useState } from 'react';
+import useHistory from './history/use-history';
 import useSelection from './use-selection';
-import { EditorSelectionRange, EditorValue } from './types';
+import { EditorValue } from './types';
 import { KeyboardAction } from './keyboard-action';
 import { bold, italic } from './commands/';
-import { HistoryPushOptions } from './use-history/types';
-import { isSelectionIsActive } from './utils';
+import usePushToHistory from './history/use-push-to-history';
 
 interface OnChangeFunction {
     (value: string): void;
@@ -19,6 +17,7 @@ interface EditorProps {
 
 const Editor: FC<EditorProps> = ({ value, onChange }) => {
     const history = useHistory();
+    const pushToHistory = usePushToHistory(history);
     const { ref, updateSelection, currentSelection } = useSelection();
     const shouldUpdateSelection = useRef<boolean>(false);
     const [localValue, setLocalValue] = useState(value || '');
@@ -41,14 +40,6 @@ const Editor: FC<EditorProps> = ({ value, onChange }) => {
             pattern: { ctrlKey: true, code: 'KeyI' },
         }),
     ];
-
-    const pushToHistory = useCallback(
-        (value: EditorValue, previousSelection: EditorSelectionRange) =>
-            history.push(value, previousSelection),
-        [history.push]
-    );
-
-    const pushToHistoryDebounced = useDebouncedCallback(pushToHistory, 600);
 
     useEffect(() => {
         const value = history.active?.value || '';
@@ -85,7 +76,7 @@ const Editor: FC<EditorProps> = ({ value, onChange }) => {
                         },
                     };
 
-                    pushToHistoryDebounced(editorValue, currentSelection.current);
+                    pushToHistory(editorValue, currentSelection.current, { debounced: true });
                 }}
                 onSelect={({ currentTarget: { selectionStart: start, selectionEnd: end } }) =>
                     (currentSelection.current = { start, end })
@@ -97,7 +88,7 @@ const Editor: FC<EditorProps> = ({ value, onChange }) => {
                         return;
                     }
 
-                    pushToHistoryDebounced.flush();
+                    pushToHistory.flush();
                     e.preventDefault();
                     e.stopPropagation();
 
@@ -105,16 +96,16 @@ const Editor: FC<EditorProps> = ({ value, onChange }) => {
 
                     const { currentTarget } = e;
 
-                    const newValue = await action.apply({
+                    const editorValue = await action.apply({
                         value: currentTarget.value,
                         selection: currentSelection.current,
                     });
 
-                    if (!newValue) {
+                    if (!editorValue) {
                         return;
                     }
 
-                    pushToHistory(newValue, currentSelection.current);
+                    pushToHistory(editorValue, currentSelection.current);
                 }}
                 autoFocus
             />
