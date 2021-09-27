@@ -1,6 +1,6 @@
 import { useDebouncedCallback } from 'use-debounce';
 import { useMemo } from 'react';
-import { isNewValuePushedOnTheMiddleOfTheText, isSelectionIsActive } from '../utils';
+import { isNewValuePushedOnTheMiddleOfTheText, isSelectionActive } from '../selection/utils';
 import { History, PushToHistory } from './types';
 
 export default function usePushToHistory(history: History, debounceWait = 500) {
@@ -8,17 +8,20 @@ export default function usePushToHistory(history: History, debounceWait = 500) {
 
     return useMemo<PushToHistory>(() => {
         const func: PushToHistory = (value, currentSelection, options) => {
-            const shouldPushImitate =
-                isSelectionIsActive(currentSelection) ||
-                isNewValuePushedOnTheMiddleOfTheText(value, history.active);
+            const selectionIsActive =
+                isSelectionActive(currentSelection) &&
+                !isSelectionActive(history.active?.selection);
+            const cursorIsNotAtTheEnd =
+                isNewValuePushedOnTheMiddleOfTheText(value, history.active) &&
+                !isSelectionActive(currentSelection);
 
-            if (history.active && shouldPushImitate) {
+            if (history.active && (selectionIsActive || cursorIsNotAtTheEnd)) {
                 history.push([value, { ...history.active, selection: currentSelection }]);
 
                 return;
             }
 
-            options.debounced ? pushDebounced([value]) : history.push([value]);
+            options?.debounced ? pushDebounced([value]) : history.push([value]);
         };
 
         func.flush = pushDebounced.flush;

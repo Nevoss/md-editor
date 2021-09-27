@@ -1,6 +1,6 @@
 import { EditorValue } from '../types';
 import { CommandTemplate, EditorCommand } from './types';
-import { isSelectionIsActive } from '../utils';
+import { isSelectionActive } from '../selection/utils';
 
 const PLACEHOLDER = '%%__PLACEHOLDER__%%';
 
@@ -16,39 +16,26 @@ const stripeReplacerPattern = {
     [TYPES.AFTER]: '$1',
 };
 
-export default function commandGenerator(
-    template: CommandTemplate
-): EditorCommand {
+export default function commandGenerator(template: CommandTemplate): EditorCommand {
     const templateWithPlaceholder = template(PLACEHOLDER);
     const templateType = getTemplateType(templateWithPlaceholder);
     const templateLength = template('').length;
     const templateAppliedRegex = generateAppliedRegex(templateWithPlaceholder);
 
     return ({ value, selection }: EditorValue): EditorValue => {
-        if (!isSelectionIsActive(selection)) {
-            return getNonSelectedEditorValue(
-                { value, selection },
-                templateWithPlaceholder
-            );
+        if (!isSelectionActive(selection)) {
+            return getNonSelectedEditorValue({ value, selection }, templateWithPlaceholder);
         }
 
         const selectedValue = value.slice(selection.start, selection.end);
         const isApplied = templateAppliedRegex.test(selectedValue);
 
         const replacedValue = isApplied
-            ? selectedValue.replace(
-                  templateAppliedRegex,
-                  stripeReplacerPattern[templateType]
-              )
+            ? selectedValue.replace(templateAppliedRegex, stripeReplacerPattern[templateType])
             : template(selectedValue);
 
         const newValue = value.replace(
-            new RegExp(
-                `^(.{${selection.start}})(.{${
-                    selection.end - selection.start
-                }})`,
-                'sm'
-            ),
+            new RegExp(`^(.{${selection.start}})(.{${selection.end - selection.start}})`, 'sm'),
             `$1${replacedValue}`
         );
 
@@ -56,9 +43,7 @@ export default function commandGenerator(
             value: newValue,
             selection: {
                 start: selection.start,
-                end:
-                    selection.end +
-                    (isApplied ? -templateLength : templateLength),
+                end: selection.end + (isApplied ? -templateLength : templateLength),
             },
         };
     };

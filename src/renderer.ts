@@ -27,5 +27,4 @@
  */
 
 import './style.css';
-
 import './render.tsx';

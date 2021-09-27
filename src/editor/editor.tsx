@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import useHistory from './history/use-history';
-import useSelection from './use-selection';
+import useSelection from './selection/use-selection';
 import { EditorValue } from './types';
 import { KeyboardAction } from './keyboard-action';
 import { bold, italic } from './commands/';
@@ -55,10 +55,6 @@ const Editor: FC<EditorProps> = ({ value, onChange }) => {
 
     return (
         <div className="h-full flex flex-col">
-            {/*<div>*/}
-            {/*    <button onClick={() => history.undo()}> Undo </button>*/}
-            {/*    <button onClick={() => history.redo()}> Redo </button>*/}
-            {/*</div>*/}
             <textarea
                 ref={(el) => (ref.current = el)}
                 name="editor"

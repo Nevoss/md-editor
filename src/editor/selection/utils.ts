@@ -1,6 +1,10 @@
-import { EditorSelectionRange, EditorValue } from './types';
+import { EditorSelectionRange, EditorValue } from '../types';
 
-export function isSelectionIsActive(selection: EditorSelectionRange) {
+export function isSelectionActive(selection?: EditorSelectionRange) {
+    if (!selection) {
+        return false;
+    }
+
     return selection.end > selection.start;
 }
 
