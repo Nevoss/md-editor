@@ -1,5 +1,6 @@
-import { EditorSelectionRange, EditorValue } from '../types';
+import { EditorValue } from '../types';
 import { ControlFunctions } from 'use-debounce/lib/useDebouncedCallback';
+import { EditorSelectionRange } from '../selection/types';
 
 export interface History {
     state: HistoryState;

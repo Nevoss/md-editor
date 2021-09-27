@@ -1,4 +1,5 @@
-import { EditorSelectionRange, EditorValue } from '../types';
+import { EditorValue } from '../types';
+import { EditorSelectionRange } from './types';
 
 export function isSelectionActive(selection?: EditorSelectionRange) {
     if (!selection) {

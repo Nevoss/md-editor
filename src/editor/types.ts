@@ -1,15 +1,6 @@
-export interface EditorSelectionRange {
-    start: number;
-    end: number;
-}
+import { EditorSelectionRange } from './selection/types';
 
 export interface EditorValue {
     value: string;
     selection: EditorSelectionRange;
-}
-
-export interface EditorKeyboardEvent {
-    ctrlKey: boolean;
-    shiftKey: boolean;
-    code: string;
 }

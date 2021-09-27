@@ -2,9 +2,8 @@ import React, { FC, useEffect, useRef, useState } from 'react';
 import useHistory from './history/use-history';
 import useSelection from './selection/use-selection';
 import { EditorValue } from './types';
-import { KeyboardAction } from './keyboard-action';
-import { bold, italic } from './commands/';
 import usePushToHistory from './history/use-push-to-history';
+import useKeyboardCommands from './commands/keyboard/use-keyboard-commands';
 
 interface OnChangeFunction {
     (value: string): void;
@@ -16,30 +15,19 @@ interface EditorProps {
 }
 
 const Editor: FC<EditorProps> = ({ value, onChange }) => {
+    // History
     const history = useHistory();
     const pushToHistory = usePushToHistory(history);
-    const { ref, updateSelection, currentSelection } = useSelection();
-    const shouldUpdateSelection = useRef<boolean>(false);
-    const [localValue, setLocalValue] = useState(value || '');
 
-    const keyboardActions: KeyboardAction[] = [
-        KeyboardAction.create({
-            apply: async () => history.undo(),
-            pattern: { ctrlKey: true, code: 'KeyZ' },
-        }),
-        KeyboardAction.create({
-            apply: async () => history.redo(),
-            pattern: { ctrlKey: true, shiftKey: true, code: 'KeyZ' },
-        }),
-        KeyboardAction.create({
-            apply: async (value) => bold(value),
-            pattern: { ctrlKey: true, code: 'KeyB' },
-        }),
-        KeyboardAction.create({
-            apply: async (value) => italic(value),
-            pattern: { ctrlKey: true, code: 'KeyI' },
-        }),
-    ];
+    // Keyboard Commands
+    const keyboardCommands = useKeyboardCommands({ undo: history.undo, redo: history.redo });
+
+    // Selection
+    const shouldUpdateSelection = useRef<boolean>(false);
+    const { ref, updateSelection, currentSelection } = useSelection();
+
+    // Editor Local
+    const [localValue, setLocalValue] = useState(value || '');
 
     useEffect(() => {
         const value = history.active?.value || '';
@@ -64,7 +52,7 @@ const Editor: FC<EditorProps> = ({ value, onChange }) => {
                 onChange={({ currentTarget }) => {
                     setLocalValue(currentTarget.value);
 
-                    const editorValue: EditorValue = {
+                    const value: EditorValue = {
                         value: currentTarget.value,
                         selection: {
                             start: currentTarget.selectionStart,
@@ -72,36 +60,34 @@ const Editor: FC<EditorProps> = ({ value, onChange }) => {
                         },
                     };
 
-                    pushToHistory(editorValue, currentSelection.current, { debounced: true });
+                    pushToHistory(value, currentSelection.current, { debounced: true });
                 }}
                 onSelect={({ currentTarget: { selectionStart: start, selectionEnd: end } }) =>
                     (currentSelection.current = { start, end })
                 }
                 onKeyDown={async (e) => {
-                    const action = keyboardActions.find((action) => action.shouldApply(e));
+                    const keyboardCommand = keyboardCommands.find((action) =>
+                        action.shouldApply(e)
+                    );
 
-                    if (!action) {
+                    if (!keyboardCommand) {
                         return;
                     }
 
-                    pushToHistory.flush();
                     e.preventDefault();
                     e.stopPropagation();
 
+                    pushToHistory.flush();
                     shouldUpdateSelection.current = true;
 
-                    const { currentTarget } = e;
-
-                    const editorValue = await action.apply({
-                        value: currentTarget.value,
+                    const value = await keyboardCommand.apply({
+                        value: e.currentTarget.value,
                         selection: currentSelection.current,
                     });
 
-                    if (!editorValue) {
-                        return;
+                    if (value) {
+                        pushToHistory(value, currentSelection.current);
                     }
-
-                    pushToHistory(editorValue, currentSelection.current);
                 }}
                 autoFocus
             />

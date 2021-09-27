@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { EditorSelectionRange } from '../types';
-import { HTMLElementWithSelection } from './types';
+import { EditorSelectionRange, HTMLElementWithSelection } from './types';
 
 export default function useSelection() {
     const ref = useRef<HTMLElementWithSelection>();

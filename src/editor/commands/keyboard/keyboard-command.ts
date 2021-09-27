@@ -1,10 +1,11 @@
-import { EditorKeyboardEvent, EditorValue } from './types';
+import { EditorKeyboardEvent } from './types';
+import { EditorValue } from '../../types';
 
 interface ApplyFunction {
     (value: EditorValue): Promise<EditorValue | void>;
 }
 
-export class KeyboardAction {
+export default class KeyboardCommand {
     public apply: ApplyFunction;
     protected pattern: EditorKeyboardEvent;
 
@@ -25,13 +26,12 @@ export class KeyboardAction {
         apply: ApplyFunction;
         pattern: Partial<EditorKeyboardEvent>;
     }) {
-        return new KeyboardAction(apply, pattern);
+        return new KeyboardCommand(apply, pattern);
     }
 
     shouldApply(event: EditorKeyboardEvent) {
         return Object.entries(this.pattern).every(
-            ([key, val]: [keyof EditorKeyboardEvent, boolean | string]) =>
-                event[key] === val
+            ([key, val]: [keyof EditorKeyboardEvent, boolean | string]) => event[key] === val
         );
     }
 }
