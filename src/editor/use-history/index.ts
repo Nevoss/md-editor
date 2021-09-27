@@ -1,45 +1,43 @@
-import { Dispatch, useCallback, useReducer } from 'react';
-import { EditorValue, EditorSelectionRange } from '../types';
+import { Dispatch, useCallback, useMemo, useReducer } from 'react';
+import { EditorSelectionRange, EditorValue } from '../types';
 import {
     History,
-    HistoryPushOptions,
     HistoryPushReducerActionPayload,
     HistoryReducerAction,
     HistoryReducerActions,
 } from './types';
 
 const isFirstItem = (val: EditorValue, index: number) => index === 0;
-const isNotFirstItem = (val: EditorValue, index: number) =>
-    !isFirstItem(val, index);
+const isNotFirstItem = (val: EditorValue, index: number) => !isFirstItem(val, index);
 
 const actions: HistoryReducerActions = {
     push: (
-        prev: History,
-        { payload }: HistoryReducerAction<HistoryPushReducerActionPayload>
+        { current }: History,
+        {
+            payload: { value, previousSelection },
+        }: HistoryReducerAction<HistoryPushReducerActionPayload>
     ): History => {
-        let current = [...prev.current];
+        const values = [value];
+        const [activeItem] = current;
+        const newValueLength = value.value.length - (activeItem?.value?.length || 0);
+        const newValueStartingPosition = value.selection.start - newValueLength;
 
-        // Can update the last item selection if there is a range of selection before creating
-        // the new item
-        if (payload.lastSelection) {
-            current = current.map((val, index) => {
-                if (isFirstItem(val, index)) {
-                    val.selection = payload.lastSelection;
-                }
-
-                return val;
+        if (
+            activeItem &&
+            (previousSelection || activeItem.selection.start !== newValueStartingPosition)
+        ) {
+            values.push({
+                value: activeItem.value,
+                selection: previousSelection,
             });
         }
 
         return {
-            current: [...payload.values, ...current],
+            current: [...values, ...current],
             temp: [],
-            lastAction: payload.adjustSelection
-                ? 'push-and-adjust-selection'
-                : 'push',
         };
     },
-    undo: (prev: History) => {
+    undo: (prev: History): History => {
         const lastValue = prev.current.find(isFirstItem);
 
         if (!lastValue) {
@@ -49,10 +47,9 @@ const actions: HistoryReducerActions = {
         return {
             current: prev.current.filter(isNotFirstItem),
             temp: [lastValue, ...prev.temp],
-            lastAction: 'undo',
         };
     },
-    redo: (prev: History) => {
+    redo: (prev: History): History => {
         const lastTempValue = prev.temp.find(isFirstItem);
 
         if (!lastTempValue) {
@@ -62,7 +59,6 @@ const actions: HistoryReducerActions = {
         return {
             current: [lastTempValue, ...prev.current],
             temp: prev.temp.filter(isNotFirstItem),
-            lastAction: 'redo',
         };
     },
 };
@@ -70,40 +66,30 @@ const actions: HistoryReducerActions = {
 const initialHistory: History = {
     current: [],
     temp: [],
-    lastAction: null,
 };
 
 export default function useHistory() {
-    const [state, dispatch]: [History, Dispatch<HistoryReducerAction>] =
-        useReducer(
-            (state: History, { type, payload }: HistoryReducerAction) => {
-                if (!actions[type]) {
-                    throw new Error('Action not founded');
-                }
+    const [state, dispatch]: [History, Dispatch<HistoryReducerAction>] = useReducer(
+        (state: History, { type, payload }: HistoryReducerAction) => {
+            if (!actions[type]) {
+                throw new Error('Action not founded');
+            }
 
-                return actions[type](state, { type, payload });
-            },
-            initialHistory
-        );
+            return actions[type](state, { type, payload });
+        },
+        initialHistory
+    );
 
     const push = useCallback(
-        (
-            values: EditorValue[],
-            {
-                lastSelection = null,
-                adjustSelection = false,
-            }: HistoryPushOptions
-        ) =>
-            dispatch({
-                type: 'push',
-                payload: { values, lastSelection, adjustSelection },
-            }),
+        (value: EditorValue, previousSelection?: EditorSelectionRange) =>
+            dispatch({ type: 'push', payload: { value, previousSelection } }),
         [dispatch]
     );
 
     const undo = useCallback(() => dispatch({ type: 'undo' }), [dispatch]);
-
     const redo = useCallback(() => dispatch({ type: 'redo' }), [dispatch]);
 
-    return { state, push, undo, redo };
+    const active = useMemo(() => state.current[0] || null, [state.current]);
+
+    return { state, active, push, undo, redo };
 }

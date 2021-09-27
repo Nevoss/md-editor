@@ -3,7 +3,6 @@ import { EditorSelectionRange, EditorValue } from '../types';
 export interface History {
     current: EditorValue[];
     temp: EditorValue[];
-    lastAction: 'push' | 'push-and-adjust-selection' | 'undo' | 'redo' | null;
 }
 
 export interface HistoryReducerActions {
@@ -11,9 +10,8 @@ export interface HistoryReducerActions {
 }
 
 export interface HistoryPushReducerActionPayload {
-    values: EditorValue[];
-    lastSelection?: EditorSelectionRange;
-    adjustSelection?: boolean;
+    value: EditorValue;
+    previousSelection?: EditorSelectionRange;
 }
 
 export interface HistoryPushOptions {
