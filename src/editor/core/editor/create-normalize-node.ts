@@ -1,55 +1,51 @@
 import type { NodeEntry } from 'slate';
 import { OriginalEditor } from '../../types';
-import { Element, Node, Transforms } from 'slate';
+import { Element, Node } from 'slate';
 import { DEFAULT_ELEMENT_TYPE } from '../elements';
 import ElementWrapper from '../elements/element-wrapper';
+import { BaseElement } from '../elements/types';
 
 export default function createNormalizeNode(
     editor: OriginalEditor,
     elements: ElementWrapper[]
 ): (entry: NodeEntry) => void {
     const { normalizeNode } = editor;
-    const transformableElements = elements.filter((element) => element.patternMatch);
+    const transformableElements = elements.filter((element) => element.regex);
 
     return (entry) => {
         const [node, path] = entry;
 
         if (Element.isElement(node)) {
-            const nonInlineMarkdownElements = transformableElements.filter(
-                (element) => !element.isInline
-            );
+            const text = getFullText(node);
 
             if (node.type === DEFAULT_ELEMENT_TYPE) {
-                const transferToElement = nonInlineMarkdownElements.find((element) =>
-                    element.patternMatch(Node.leaf(node, [0]).text)
-                );
+                const transferToElement = transformableElements.find((element) => {
+                    return !element.isInline && element.matchAll(text).length;
+                });
 
                 if (transferToElement) {
-                    Transforms.unwrapNodes(editor, { at: path });
-                    Transforms.wrapNodes(
-                        editor,
-                        { type: transferToElement.type, children: [] },
-                        { at: path }
-                    );
-
+                    transferToElement.transformInto(editor, node, path);
                     return;
                 }
             }
 
-            const elementWrapper = nonInlineMarkdownElements.find(({ type }) => type === node.type);
+            const currentElement = transformableElements.find((element) => element.isElement(node));
 
-            if (elementWrapper && !elementWrapper.patternMatch(Node.leaf(node, [0]).text)) {
-                Transforms.unwrapNodes(editor, { at: path });
-                Transforms.wrapNodes(
-                    editor,
-                    { type: DEFAULT_ELEMENT_TYPE, children: [] },
-                    { at: path }
-                );
-
-                return;
+            if (currentElement && !currentElement.matchAll(text).length) {
+                currentElement.transformBack(editor, node, path);
             }
         }
 
         normalizeNode(entry);
     };
+}
+
+function getFullText(element: BaseElement): string {
+    return element.children.reduce((carry, child) => {
+        if (Element.isElement(child)) {
+            return carry + getFullText(child);
+        }
+
+        return carry + child.text;
+    }, '');
 }
