@@ -16,7 +16,7 @@ const exampleValue: Descendant[] = [
     //     type: 'heading1',
     //     children: [{ type: 'indicator', children: [{ text: '# ' }] }, { text: 'Some text' }],
     // },
-    { type: 'paragraph', children: [{ text: '# H1 Try' }] },
+    { type: 'paragraph', children: [{ text: 'This is a test **bold** and this' }] },
     // { type: 'paragraph', children: [{ text: '## H2' }] },
     // { type: 'paragraph', children: [{ text: '### H3' }] },
     // { type: 'paragraph', children: [{ text: '#### H4' }] },

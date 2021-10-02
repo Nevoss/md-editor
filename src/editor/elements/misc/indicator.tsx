@@ -12,7 +12,7 @@ export default ElementWrapper.create<IndicatorElement>({
     type: 'indicator',
     isInline: true,
     component: ({ children, attributes }) => (
-        <span {...attributes} className="text-gray-300" style={{ fontSize: '0.8em' }}>
+        <span {...attributes} className="text-gray-400" style={{ fontSize: '0.8em' }}>
             {children}
         </span>
     ),

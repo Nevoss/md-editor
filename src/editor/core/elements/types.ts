@@ -4,6 +4,7 @@ import { InlineDescendant } from '../../types';
 export interface BaseElement extends SlateElement {
     type: string;
     children: InlineDescendant[];
+    id?: string;
 }
 
 export interface RenderElementProps<T extends BaseElement = BaseElement> {

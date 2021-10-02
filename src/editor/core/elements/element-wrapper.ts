@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { RenderElementProps } from './types';
-import { Editor, Element, Node, Path, Transforms } from 'slate';
+import { Element, Node, Path, Transforms } from 'slate';
 import { CombineEditor } from '../../types';
 import { DEFAULT_ELEMENT_TYPE } from './index';
 
@@ -36,6 +36,35 @@ export default class ElementWrapper<T extends Element = Element> {
 
     static create<T extends Element>(options: ElementWrapperOptions<T>) {
         return new ElementWrapper<T>(options);
+    }
+
+    match(value: string): SingleMatch | null {
+        if (!this.regex) {
+            return null;
+        }
+
+        const match = value.match(new RegExp(this.regex, 'dm'));
+
+        if (!match) {
+            return null;
+        }
+
+        // @ts-ignore
+        const [fullMatchRange, ...indicatorsRange]: [number, number][] = match.indices;
+        const [fullMatch, ...indicators] = match;
+
+        return {
+            fullMatch: {
+                value: fullMatch,
+                position: fullMatchRange,
+            },
+            indicators: indicators
+                ? indicators.map((value, index) => ({
+                      value: value,
+                      position: indicatorsRange[index],
+                  }))
+                : [],
+        };
     }
 
     matchAll(value: string): SingleMatch[] {
