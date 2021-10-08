@@ -6,7 +6,7 @@ import { DEFAULT_ELEMENT_TYPE, INDICATOR_ELEMENT_TYPE } from '../../elements';
 
 const transformableElements = elements.filter((element) => element.regex);
 
-const transformIntoDefaultElement: normalizeFunction = ([node, path], editor) => {
+const transformIntoDefaultElement: normalizeFunction = (editor, [node, path]) => {
     if (!Element.isElement(node)) {
         return false;
     }

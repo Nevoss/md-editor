@@ -6,7 +6,7 @@ import { DEFAULT_ELEMENT_TYPE } from '../../elements';
 
 const blockElements = elements.filter((element) => !element.isInline && element.regex);
 
-const transformIntoBlockElement: normalizeFunction = ([node, path], editor) => {
+const transformIntoBlockElement: normalizeFunction = (editor, [node, path]) => {
     if (!Element.isElement(node) || node.type !== DEFAULT_ELEMENT_TYPE) {
         return false;
     }

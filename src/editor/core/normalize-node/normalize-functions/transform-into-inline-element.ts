@@ -5,7 +5,7 @@ import { generateId, wrapIndicators } from '../utils';
 
 const inlineElements = elements.filter((element) => element.isInline && element.regex);
 
-const transformIntoInlineElement: normalizeFunction = ([node, path], editor) => {
+const transformIntoInlineElement: normalizeFunction = (editor, [node, path]) => {
     if (!Text.isText(node)) {
         return false;
     }

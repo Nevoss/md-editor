@@ -6,12 +6,16 @@ import { INDICATOR_ELEMENT_TYPE } from '../elements';
 export function wrapIndicators(editor: Editor, match: SingleMatch, parentPath: Path): void {
     let prefixForStart = match.fullMatch.position[0];
     let prefixForEnd = match.fullMatch.position[0];
-    let index = 0;
 
-    match.indicators.forEach((indicator) => {
+    match.indicators.forEach((indicator, index) => {
         Transforms.wrapNodes(
             editor,
-            { type: INDICATOR_ELEMENT_TYPE, children: [] },
+            {
+                type: INDICATOR_ELEMENT_TYPE,
+                children: [],
+                value: indicator.value,
+                position: index === 0 ? 'before' : 'after',
+            },
             {
                 at: {
                     anchor: {
@@ -29,7 +33,6 @@ export function wrapIndicators(editor: Editor, match: SingleMatch, parentPath: P
 
         prefixForStart += indicator.value.length;
         prefixForEnd += indicator.value.length;
-        index += 1;
     });
 }
 

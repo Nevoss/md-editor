@@ -6,7 +6,7 @@ export default function createNormalizeNode(editor: OriginalEditor): (entry: Nod
     const { normalizeNode } = editor;
 
     return (entry) => {
-        const shouldReturn = normalizeFunctions.some((func) => func(entry, editor));
+        const shouldReturn = normalizeFunctions.some((func) => func(editor, entry));
 
         if (shouldReturn) {
             return;
