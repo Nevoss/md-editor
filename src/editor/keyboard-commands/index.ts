@@ -1,6 +1,6 @@
 import KeyboardCommand from '../core/keyboard-command';
-import SplitOrInsertNewLine from './split-or-insert-new-line';
+import miscKeyboardCommands from './misc/';
 
-const keyboardCommands: KeyboardCommand[] = [SplitOrInsertNewLine];
+const keyboardCommands: KeyboardCommand[] = [...miscKeyboardCommands];
 
 export default keyboardCommands;

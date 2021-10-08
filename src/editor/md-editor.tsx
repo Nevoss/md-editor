@@ -62,7 +62,7 @@ const renderElement = (props: RenderElementProps): JSX.Element => {
     return <ElementComponent {...props} />;
 };
 
-const editor: CombineEditor = createEditor(elements);
+const editor: CombineEditor = createEditor();
 
 const MDEditor: FC = () => {
     const [value, setValue] = useState<Descendant[]>(initialValue);

@@ -6,6 +6,7 @@ import { Text } from 'slate';
 export interface IndicatorElement extends BaseElement {
     type: 'indicator';
     children: Text[];
+    length?: number;
 }
 
 export default ElementWrapper.create<IndicatorElement>({
