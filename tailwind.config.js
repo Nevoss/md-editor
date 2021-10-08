@@ -1,18 +1,24 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 module.exports = {
     purge: [],
     darkMode: false, // or 'media' or 'class'
     theme: {
         extend: {
+            fontFamily: {
+                sans: ['Open Sans', ...defaultTheme.fontFamily.sans],
+            },
             typography: (theme) => ({
-                DEFAULT: {
+                xl: {
                     css: {
                         color: theme('colors.gray.700'),
-                        h1: { color: theme('colors.gray.700'), marginTop: 0 },
-                        h2: { color: theme('colors.gray.700'), marginTop: 0 },
-                        h3: { color: theme('colors.gray.700'), marginTop: 0 },
-                        h4: { color: theme('colors.gray.700'), marginTop: 0 },
-                        h5: { color: theme('colors.gray.700'), marginTop: 0 },
-                        h6: { color: theme('colors.gray.700'), marginTop: 0 },
+                        h1: { color: theme('colors.gray.700'), marginTop: 0, fontWeight: '700' },
+                        h2: { color: theme('colors.gray.700'), marginTop: 0, fontWeight: 'bold' },
+                        h3: { color: theme('colors.gray.700'), marginTop: 0, fontWeight: 'bold' },
+                        h4: { color: theme('colors.gray.700'), marginTop: 0, fontWeight: 'bold' },
+                        h5: { color: theme('colors.gray.700'), marginTop: 0, fontWeight: 'bold' },
+                        h6: { color: theme('colors.gray.700'), marginTop: 0, fontWeight: 'bold' },
                         p: { color: theme('colors.gray.700') },
                         code: {
                             display: 'inline-block',

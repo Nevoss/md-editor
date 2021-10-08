@@ -75,7 +75,7 @@ const MDEditor: FC = () => {
     return (
         <div className="h-full overflow-y-auto">
             <Slate editor={editor} value={value} onChange={setValue}>
-                <div className="py-16 px-8 mx-auto max-w-4xl prose prose-editor">
+                <div className="py-16 px-8 mx-auto max-w-4xl prose-xl prose-editor">
                     <Editable
                         renderElement={renderElement}
                         onKeyDown={(e) => {
