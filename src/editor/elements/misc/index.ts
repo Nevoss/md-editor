@@ -1,4 +1,4 @@
-import ElementWrapper from '../../core/elements/element-wrapper';
+import ElementWrapper from '../element-wrapper';
 import indicator from './indicator';
 
 const elements: ElementWrapper[] = [indicator];

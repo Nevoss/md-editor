@@ -1,8 +1,7 @@
 import { normalizeFunction } from '../types';
-import elements from '../../../elements';
+import elements, { DEFAULT_ELEMENT_TYPE, INDICATOR_ELEMENT_TYPE } from '../../../elements';
 import { getElementFullText } from '../utils';
 import { Element, Transforms } from 'slate';
-import { DEFAULT_ELEMENT_TYPE, INDICATOR_ELEMENT_TYPE } from '../../elements';
 
 const transformableElements = elements.filter((element) => element.regex);
 

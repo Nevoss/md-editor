@@ -2,26 +2,23 @@ import type { RenderElementProps } from 'slate-react';
 import type { Descendant } from 'slate';
 import React, { FC, useEffect, useState } from 'react';
 import { Slate, Editable } from 'slate-react';
-import elements from './elements';
+import elements, { DEFAULT_ELEMENT_TYPE } from './elements';
 import { CombineEditor } from './types';
 import { Transforms } from 'slate';
 import createEditor from './core/create-editor';
 import keyboardCommands from './keyboard-commands';
-import { DEFAULT_ELEMENT_TYPE } from './core/elements';
 
 const initialValue: Descendant[] = [{ type: 'paragraph', children: [{ text: '' }] }];
 
 const exampleValue: Descendant[] = [
-    // {
-    //     type: 'heading1',
-    //     children: [{ type: 'indicator', children: [{ text: '# ' }] }, { text: 'Some text' }],
-    // },
-    { type: 'paragraph', children: [{ text: 'This is a test **bold** and this' }] },
-    // { type: 'paragraph', children: [{ text: '## H2' }] },
-    // { type: 'paragraph', children: [{ text: '### H3' }] },
-    // { type: 'paragraph', children: [{ text: '#### H4' }] },
-    // { type: 'paragraph', children: [{ text: '##### H5' }] },
-    // { type: 'paragraph', children: [{ text: '###### H6' }] },
+    { type: 'paragraph', children: [{ text: '# H1' }] },
+    { type: 'paragraph', children: [{ text: '## H2' }] },
+    { type: 'paragraph', children: [{ text: '### H3' }] },
+    { type: 'paragraph', children: [{ text: '#### H4' }] },
+    { type: 'paragraph', children: [{ text: '##### H5' }] },
+    { type: 'paragraph', children: [{ text: '###### H6' }] },
+    { type: 'paragraph', children: [{ text: '' }] },
+    { type: 'paragraph', children: [{ text: 'This is a test **bold** and this is a `code`' }] },
     // { type: 'paragraph', children: [{ text: '' }] },
     // {
     //     type: 'paragraph',
@@ -31,7 +28,6 @@ const exampleValue: Descendant[] = [
     //         { text: ' yeah it is' },
     //     ],
     // },
-    // { type: 'paragraph', children: [{ text: '' }] },
     // {
     //     type: 'paragraph',
     //     children: [{ text: 'Some text here with **bold** value and *italic* value and `Code`' }],

@@ -1,4 +1,4 @@
-import KeyboardCommand from '../core/keyboard-command';
+import KeyboardCommand from './keyboard-command';
 import miscKeyboardCommands from './misc/';
 
 const keyboardCommands: KeyboardCommand[] = [...miscKeyboardCommands];

@@ -1,6 +1,6 @@
 import React from 'react';
-import ElementWrapper from '../../core/elements/element-wrapper';
-import { BaseElement } from '../../core/elements/types';
+import ElementWrapper from '../element-wrapper';
+import { BaseElement } from '../types';
 
 export interface Heading1Element extends BaseElement {
     type: 'heading1';

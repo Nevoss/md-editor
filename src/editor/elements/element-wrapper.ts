@@ -1,23 +1,6 @@
 import { FC } from 'react';
-import { RenderElementProps } from './types';
+import { ElementWrapperOptions, MarkdownSingleMatch, RenderElementProps } from './types';
 import { Element } from 'slate';
-
-interface ElementWrapperOptions<T extends Element> {
-    type: ElementWrapper<T>['type'];
-    component: ElementWrapper<T>['component'];
-    isInline?: ElementWrapper<T>['isInline'];
-    regex?: ElementWrapper<T>['regex'];
-}
-
-export interface SingleMatchGroup {
-    value: string;
-    position: [number, number];
-}
-
-export interface SingleMatch {
-    fullMatch: SingleMatchGroup;
-    indicators: SingleMatchGroup[];
-}
 
 export default class ElementWrapper<T extends Element = Element> {
     type: T['type'];
@@ -36,7 +19,7 @@ export default class ElementWrapper<T extends Element = Element> {
         return new ElementWrapper<T>(options);
     }
 
-    match(value: string): SingleMatch | null {
+    match(value: string): MarkdownSingleMatch | null {
         if (!this.regex) {
             return null;
         }

@@ -2,7 +2,7 @@ import { normalizeFunction } from '../types';
 import { Element, Transforms } from 'slate';
 import elements from '../../../elements/markdown';
 import { getElementFullText, wrapIndicators } from '../utils';
-import { DEFAULT_ELEMENT_TYPE } from '../../elements';
+import { DEFAULT_ELEMENT_TYPE } from '../../../elements';
 
 const blockElements = elements.filter((element) => !element.isInline && element.regex);
 

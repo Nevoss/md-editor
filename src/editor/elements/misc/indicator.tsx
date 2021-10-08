@@ -1,6 +1,6 @@
 import React from 'react';
-import ElementWrapper from '../../core/elements/element-wrapper';
-import { BaseElement } from '../../core/elements/types';
+import ElementWrapper from '../element-wrapper';
+import { BaseElement } from '../types';
 import { Text } from 'slate';
 
 export interface IndicatorElement extends BaseElement {

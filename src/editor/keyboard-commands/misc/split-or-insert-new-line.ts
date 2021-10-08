@@ -1,6 +1,6 @@
-import KeyboardCommand from '../../core/keyboard-command';
-import { DEFAULT_ELEMENT_TYPE } from '../../core/elements';
+import KeyboardCommand from '..//keyboard-command';
 import { Node, Transforms } from 'slate';
+import { DEFAULT_ELEMENT_TYPE } from '../../elements';
 
 export default KeyboardCommand.create({
     pattern: { key: 'Enter' },
