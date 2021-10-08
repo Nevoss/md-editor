@@ -1,5 +1,10 @@
 import { FC } from 'react';
-import { ElementWrapperOptions, MarkdownSingleMatch, RenderElementProps } from './types';
+import {
+    ElementWrapperIndicatorOptions,
+    ElementWrapperOptions,
+    MarkdownSingleMatch,
+    RenderElementProps,
+} from './types';
 import { Element } from 'slate';
 
 export default class ElementWrapper<T extends Element = Element> {
@@ -7,10 +12,12 @@ export default class ElementWrapper<T extends Element = Element> {
     component: FC<RenderElementProps<T>>;
     isInline: boolean;
     regex?: string[];
+    indicatorOptions?: ElementWrapperIndicatorOptions;
 
     constructor(options: ElementWrapperOptions<T>) {
         this.type = options.type;
         this.component = options.component;
+        this.indicatorOptions = options.indicatorOptions;
         this.isInline = options.isInline || false;
 
         if (options.regex) {

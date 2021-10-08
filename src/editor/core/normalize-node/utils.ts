@@ -1,8 +1,14 @@
 import { BaseElement, MarkdownSingleMatch } from '../../elements/types';
 import { Editor, Element, Path, Transforms } from 'slate';
 import { INDICATOR_ELEMENT_TYPE } from '../../elements';
+import ElementWrapper from '../../elements/element-wrapper';
 
-export function wrapIndicators(editor: Editor, match: MarkdownSingleMatch, parentPath: Path): void {
+export function wrapIndicators(
+    editor: Editor,
+    match: MarkdownSingleMatch,
+    parentPath: Path,
+    elementWrapper: ElementWrapper
+): void {
     let prefixForStart = match.fullMatch.position[0];
     let prefixForEnd = match.fullMatch.position[0];
 
@@ -14,6 +20,7 @@ export function wrapIndicators(editor: Editor, match: MarkdownSingleMatch, paren
                 children: [],
                 value: indicator.value,
                 position: index === 0 ? 'before' : 'after',
+                highlightLevel: elementWrapper?.indicatorOptions?.highlightLevel,
             },
             {
                 at: {

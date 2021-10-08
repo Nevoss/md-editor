@@ -44,7 +44,7 @@ const transformIntoInlineElement: normalizeFunction = (editor, [node, path]) => 
 
         const newPath = [...parentPosition, newNodePosition];
 
-        wrapIndicators(editor, match, newPath);
+        wrapIndicators(editor, match, newPath, element);
     }
 
     return true;

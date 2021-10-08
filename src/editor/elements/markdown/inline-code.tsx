@@ -8,7 +8,10 @@ export interface InlineCodeElement extends BaseElement {
 
 export default ElementWrapper.create<InlineCodeElement>({
     type: 'inline-code',
-    regex: '(`).*(`)',
+    regex: '(`).{1,}(`)',
     isInline: true,
+    indicatorOptions: {
+        highlightLevel: 'strong',
+    },
     component: ({ children, attributes }) => <code {...attributes}>{children}</code>,
 });

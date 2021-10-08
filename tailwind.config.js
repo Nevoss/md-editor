@@ -8,12 +8,29 @@ module.exports = {
                     css: {
                         color: theme('colors.gray.700'),
                         h1: { color: theme('colors.gray.700') },
-                        h2: { color: theme('colors.gray.700') },
+                        h2: {
+                            color: theme('colors.gray.700'),
+                            marginTop: 0,
+                        },
                         h3: { color: theme('colors.gray.700') },
                         h4: { color: theme('colors.gray.700') },
                         h5: { color: theme('colors.gray.700') },
                         h6: { color: theme('colors.gray.700') },
                         p: { color: theme('colors.gray.700') },
+                        code: {
+                            display: 'inline-block',
+                            background: theme('colors.gray.200'),
+                            borderRadius: theme('borderRadius.lg'),
+                            paddingRight: theme('spacing.1'),
+                            paddingLeft: theme('spacing.1'),
+                            fontWeight: theme('fontWeight.normal'),
+                            '&:before': {
+                                display: 'none',
+                            },
+                            '&:after': {
+                                display: 'none',
+                            },
+                        },
                     },
                 },
                 editor: {

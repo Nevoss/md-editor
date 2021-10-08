@@ -8,6 +8,6 @@ export interface Heading5Element extends BaseElement {
 
 export default ElementWrapper.create<Heading5Element>({
     type: 'heading5',
-    regex: '^(##### ).*$',
+    regex: '^(##### ).{1,}$',
     component: ({ children, attributes }) => <h5 {...attributes}>{children}</h5>,
 });

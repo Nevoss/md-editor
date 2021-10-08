@@ -26,6 +26,13 @@ export interface ElementWrapperOptions<T extends Element> {
     component: ElementWrapper<T>['component'];
     isInline?: ElementWrapper<T>['isInline'];
     regex?: ElementWrapper<T>['regex'] | string;
+    indicatorOptions?: ElementWrapper<T>['indicatorOptions'];
+}
+
+export type indicatorHighlightLevel = 'light' | 'normal' | 'strong';
+
+export interface ElementWrapperIndicatorOptions {
+    highlightLevel?: indicatorHighlightLevel;
 }
 
 export interface SingleMatch {

@@ -8,7 +8,7 @@ export interface ItalicElement extends BaseElement {
 
 export default ElementWrapper.create<ItalicElement>({
     type: 'italic',
-    regex: ['(\\*).*(\\*)', '(_).*(_)'],
+    regex: '(_).{1,}(_)',
     isInline: true,
     component: ({ children, attributes }) => <i {...attributes}>{children}</i>,
 });

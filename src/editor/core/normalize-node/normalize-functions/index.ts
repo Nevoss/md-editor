@@ -6,11 +6,11 @@ import avoidWritingBeforeIndicators from './avoid-writing-before-indicators';
 import { normalizeFunction } from '../types';
 
 const normalizeFunctions: normalizeFunction[] = [
+    transformIntoDefaultElement,
     transformIntoBlockElement,
     transformIntoInlineElement,
-    transformIntoDefaultElement,
-    avoidWritingAfterIndicators,
-    avoidWritingBeforeIndicators,
+    // avoidWritingAfterIndicators,
+    // avoidWritingBeforeIndicators,
 ];
 
 export default normalizeFunctions;

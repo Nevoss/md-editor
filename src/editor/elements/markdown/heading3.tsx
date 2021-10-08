@@ -8,6 +8,9 @@ export interface Heading3Element extends BaseElement {
 
 export default ElementWrapper.create<Heading3Element>({
     type: 'heading3',
-    regex: '^(### ).*$',
+    regex: '^(### ).{1,}$',
+    indicatorOptions: {
+        highlightLevel: 'light',
+    },
     component: ({ children, attributes }) => <h3 {...attributes}>{children}</h3>,
 });

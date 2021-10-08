@@ -31,7 +31,7 @@ const transformIntoBlockElement: normalizeFunction = (editor, [node, path]) => {
 
     Transforms.unwrapNodes(editor, { at: [...path, 0] });
 
-    wrapIndicators(editor, match, path);
+    wrapIndicators(editor, match, path, element);
 
     return true;
 };
