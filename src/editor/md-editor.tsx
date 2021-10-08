@@ -11,14 +11,18 @@ import keyboardCommands from './keyboard-commands';
 const initialValue: Descendant[] = [{ type: 'paragraph', children: [{ text: '' }] }];
 
 const exampleValue: Descendant[] = [
+    // {
+    //     type: 'heading1',
+    //     children: [{ type: 'indicator', children: [{ text: '# ' }] }, { text: 'This is heading' }],
+    // },
     { type: 'paragraph', children: [{ text: '# H1' }] },
-    { type: 'paragraph', children: [{ text: '## H2' }] },
-    { type: 'paragraph', children: [{ text: '### H3' }] },
-    { type: 'paragraph', children: [{ text: '#### H4' }] },
-    { type: 'paragraph', children: [{ text: '##### H5' }] },
-    { type: 'paragraph', children: [{ text: '###### H6' }] },
-    { type: 'paragraph', children: [{ text: '' }] },
-    { type: 'paragraph', children: [{ text: 'This is a test **bold** and this is a `code`' }] },
+    // { type: 'paragraph', children: [{ text: '## H2' }] },
+    // { type: 'paragraph', children: [{ text: '### H3' }] },
+    // { type: 'paragraph', children: [{ text: '#### H4' }] },
+    // { type: 'paragraph', children: [{ text: '##### H5' }] },
+    // { type: 'paragraph', children: [{ text: '###### H6' }] },
+    // { type: 'paragraph', children: [{ text: '' }] },
+    // { type: 'paragraph', children: [{ text: 'This is a test **bold** and this is a `code`' }] },
     // { type: 'paragraph', children: [{ text: '' }] },
     // {
     //     type: 'paragraph',

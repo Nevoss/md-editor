@@ -7,15 +7,12 @@ module.exports = {
                 DEFAULT: {
                     css: {
                         color: theme('colors.gray.700'),
-                        h1: { color: theme('colors.gray.700') },
-                        h2: {
-                            color: theme('colors.gray.700'),
-                            marginTop: 0,
-                        },
-                        h3: { color: theme('colors.gray.700') },
-                        h4: { color: theme('colors.gray.700') },
-                        h5: { color: theme('colors.gray.700') },
-                        h6: { color: theme('colors.gray.700') },
+                        h1: { color: theme('colors.gray.700'), marginTop: 0 },
+                        h2: { color: theme('colors.gray.700'), marginTop: 0 },
+                        h3: { color: theme('colors.gray.700'), marginTop: 0 },
+                        h4: { color: theme('colors.gray.700'), marginTop: 0 },
+                        h5: { color: theme('colors.gray.700'), marginTop: 0 },
+                        h6: { color: theme('colors.gray.700'), marginTop: 0 },
                         p: { color: theme('colors.gray.700') },
                         code: {
                             display: 'inline-block',

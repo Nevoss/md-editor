@@ -9,8 +9,8 @@ const normalizeFunctions: normalizeFunction[] = [
     transformIntoDefaultElement,
     transformIntoBlockElement,
     transformIntoInlineElement,
-    // avoidWritingAfterIndicators,
-    // avoidWritingBeforeIndicators,
+    avoidWritingAfterIndicators,
+    avoidWritingBeforeIndicators,
 ];
 
 export default normalizeFunctions;
