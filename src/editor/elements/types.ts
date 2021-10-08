@@ -25,7 +25,7 @@ export interface ElementWrapperOptions<T extends Element> {
     type: ElementWrapper<T>['type'];
     component: ElementWrapper<T>['component'];
     isInline?: ElementWrapper<T>['isInline'];
-    regex?: ElementWrapper<T>['regex'];
+    regex?: ElementWrapper<T>['regex'] | string;
 }
 
 export interface SingleMatch {

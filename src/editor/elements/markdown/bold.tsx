@@ -8,7 +8,7 @@ export interface BoldElement extends BaseElement {
 
 export default ElementWrapper.create<BoldElement>({
     type: 'bold',
-    regex: '(\\*\\*).*(\\*\\*)',
+    regex: ['(\\*\\*).*(\\*\\*)', '(__).*(__)'],
     isInline: true,
     component: ({ children, attributes }) => <b {...attributes}>{children}</b>,
 });

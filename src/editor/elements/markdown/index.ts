@@ -7,6 +7,7 @@ import heading4 from './heading4';
 import heading5 from './heading5';
 import heading6 from './heading6';
 import bold from './bold';
+import italic from './italic';
 import inlineCode from './inline-code';
 
 const elements: ElementWrapper[] = [
@@ -18,6 +19,7 @@ const elements: ElementWrapper[] = [
     heading5,
     heading6,
     bold,
+    italic,
     inlineCode,
 ];
 

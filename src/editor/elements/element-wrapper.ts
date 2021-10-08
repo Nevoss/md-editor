@@ -6,13 +6,16 @@ export default class ElementWrapper<T extends Element = Element> {
     type: T['type'];
     component: FC<RenderElementProps<T>>;
     isInline: boolean;
-    regex?: string;
+    regex?: string[];
 
     constructor(options: ElementWrapperOptions<T>) {
         this.type = options.type;
         this.component = options.component;
         this.isInline = options.isInline || false;
-        this.regex = options.regex;
+
+        if (options.regex) {
+            this.regex = Array.isArray(options.regex) ? options.regex : [options.regex];
+        }
     }
 
     static create<T extends Element>(options: ElementWrapperOptions<T>) {
@@ -24,7 +27,13 @@ export default class ElementWrapper<T extends Element = Element> {
             return null;
         }
 
-        const match = value.match(new RegExp(this.regex, 'dm'));
+        let match: RegExpMatchArray | null = null;
+
+        this.regex.some((singleRegex) => {
+            match = value.match(new RegExp(singleRegex, 'dm'));
+
+            return match;
+        });
 
         if (!match) {
             return null;

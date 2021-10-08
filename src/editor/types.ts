@@ -13,6 +13,7 @@ import { Heading4Element } from './elements/markdown/heading4';
 import { Heading5Element } from './elements/markdown/heading5';
 import { Heading6Element } from './elements/markdown/heading6';
 import { InlineCodeElement } from './elements/markdown/inline-code';
+import { ItalicElement } from './elements/markdown/italic';
 
 // Editor
 export type OriginalEditor = BaseEditor & ReactEditor & HistoryEditor;
@@ -28,9 +29,17 @@ export type Element =
     | Heading5Element
     | Heading6Element
     | BoldElement
+    | ItalicElement
     | InlineCodeElement
     | IndicatorElement;
-export type InlineDescendant = BoldElement | InlineCodeElement | IndicatorElement | Text;
+
+export type InlineDescendant =
+    | BoldElement
+    | InlineCodeElement
+    | ItalicElement
+    | IndicatorElement
+    | Text;
+
 export type Text = { text: string };
 
 declare module 'slate' {
