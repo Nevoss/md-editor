@@ -16,7 +16,7 @@ export default KeyboardCommand.create({
                 children: [{ text: '' }],
             });
 
-            if (cursorAtTheBeginningOfLine) {
+            if (cursorAtTheBeginningOfLine && selectedLeaf.text.length) {
                 Transforms.move(editor, {
                     distance: 1,
                     unit: 'line',
