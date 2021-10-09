@@ -13,12 +13,12 @@ module.exports = {
                 xl: {
                     css: {
                         color: theme('colors.gray.700'),
-                        h1: { color: theme('colors.gray.700'), marginTop: 0, fontWeight: '700' },
-                        h2: { color: theme('colors.gray.700'), marginTop: 0, fontWeight: 'bold' },
-                        h3: { color: theme('colors.gray.700'), marginTop: 0, fontWeight: 'bold' },
-                        h4: { color: theme('colors.gray.700'), marginTop: 0, fontWeight: 'bold' },
-                        h5: { color: theme('colors.gray.700'), marginTop: 0, fontWeight: 'bold' },
-                        h6: { color: theme('colors.gray.700'), marginTop: 0, fontWeight: 'bold' },
+                        h1: { color: theme('colors.gray.700'), fontWeight: '700' },
+                        h2: { color: theme('colors.gray.700'), fontWeight: 'bold' },
+                        h3: { color: theme('colors.gray.700'), fontWeight: 'bold' },
+                        h4: { color: theme('colors.gray.700'), fontWeight: 'bold' },
+                        h5: { color: theme('colors.gray.700'), fontWeight: 'bold' },
+                        h6: { color: theme('colors.gray.700'), fontWeight: 'bold' },
                         p: { color: theme('colors.gray.700') },
                         code: {
                             display: 'inline-block',
@@ -38,9 +38,13 @@ module.exports = {
                 },
                 editor: {
                     css: {
-                        p: {
-                            margin: '0',
-                        },
+                        h1: { margin: 0 },
+                        h2: { margin: 0 },
+                        h3: { margin: 0 },
+                        h4: { margin: 0 },
+                        h5: { margin: 0 },
+                        h6: { margin: 0 },
+                        p: { margin: 0 },
                     },
                 },
             }),

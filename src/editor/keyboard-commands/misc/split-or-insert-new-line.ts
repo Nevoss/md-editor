@@ -1,4 +1,4 @@
-import KeyboardCommand from '..//keyboard-command';
+import KeyboardCommand from '../keyboard-command';
 import { Node, Transforms } from 'slate';
 import { DEFAULT_ELEMENT_TYPE } from '../../elements';
 
